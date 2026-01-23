@@ -7,18 +7,18 @@ import { useTorStore } from "@/stores";
 import type { TorStatus } from "@/types";
 
 const props = defineProps<{
-  status: TorStatus;
+  torStatus: TorStatus;
 }>();
 
 const torStore = useTorStore();
 const { isLoading } = storeToRefs(torStore);
 
-const isRunning = computed(() => props.status.state === "running");
-const isStarting = computed(() => props.status.state === "starting");
-const isStopping = computed(() => props.status.state === "stopping");
+const isRunning = computed(() => props.torStatus.state === "running");
+const isStarting = computed(() => props.torStatus.state === "starting");
+const isStopping = computed(() => props.torStatus.state === "stopping");
 
 const statusText = computed(() => {
-  switch (props.status.state) {
+  switch (props.torStatus.state) {
     case "running":
       return "Process is running";
     case "starting":
@@ -26,7 +26,7 @@ const statusText = computed(() => {
     case "stopping":
       return "Stopping...";
     case "error":
-      return `Error: ${props.status.error}`;
+      return `Error: ${props.torStatus.error}`;
     default:
       return "Process is not running";
   }

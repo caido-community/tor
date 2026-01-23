@@ -4,14 +4,15 @@ import Button from "primevue/button";
 import { computed } from "vue";
 
 import { useSettingsStore } from "@/stores";
-import type { TorSettings } from "@/types";
+import type { TorSettings, TorStatus } from "@/types";
 
 const props = defineProps<{
   settings: TorSettings;
+  torStatus: TorStatus;
 }>();
 
 const settingsStore = useSettingsStore();
-const { isDownloading } = storeToRefs(settingsStore);
+const { isDownloading, isUpdating } = storeToRefs(settingsStore);
 
 const isInstalled = computed(() => props.settings.binaryPath !== undefined);
 const platformName = computed(() => {
@@ -24,6 +25,10 @@ const platformName = computed(() => {
 
 async function handleDownload() {
   await settingsStore.download();
+}
+
+async function handleUpdate() {
+  await settingsStore.update();
 }
 </script>
 
@@ -38,10 +43,24 @@ async function handleDownload() {
       </div>
       <div class="text-xs text-surface-400">
         <div>Version: {{ settings.installedVersion ?? "Unknown" }}</div>
+        <div
+          v-if="
+            torStatus.updateAvailable && torStatus.latestVersion !== undefined
+          "
+        >
+          Latest version: {{ torStatus.latestVersion }}
+        </div>
         <div class="truncate" :title="settings.binaryPath">
           Path: {{ settings.binaryPath }}
         </div>
       </div>
+      <Button
+        v-if="torStatus.updateAvailable"
+        label="Update Tor"
+        icon="fas fa-arrow-up"
+        :loading="isUpdating"
+        @click="handleUpdate"
+      />
     </div>
 
     <div v-else class="flex flex-col gap-3">

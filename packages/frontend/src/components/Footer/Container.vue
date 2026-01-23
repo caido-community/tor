@@ -63,7 +63,7 @@ function togglePopover(event: MouseEvent) {
     </button>
 
     <Popover ref="popoverRef">
-      <StatusPopover :status="status" />
+      <StatusPopover :tor-status="status" />
     </Popover>
   </div>
 </template>

@@ -7,18 +7,18 @@ import { useTorStore } from "@/stores";
 import type { TorStatus } from "@/types";
 
 const props = defineProps<{
-  status: TorStatus;
+  torStatus: TorStatus;
 }>();
 
 const torStore = useTorStore();
 const { isLoading } = storeToRefs(torStore);
 
-const isRunning = computed(() => props.status.state === "running");
-const isStarting = computed(() => props.status.state === "starting");
-const isStopping = computed(() => props.status.state === "stopping");
+const isRunning = computed(() => props.torStatus.state === "running");
+const isStarting = computed(() => props.torStatus.state === "starting");
+const isStopping = computed(() => props.torStatus.state === "stopping");
 
 const statusText = computed(() => {
-  switch (props.status.state) {
+  switch (props.torStatus.state) {
     case "running":
       return "Running";
     case "starting":
@@ -33,7 +33,7 @@ const statusText = computed(() => {
 });
 
 const statusColor = computed(() => {
-  switch (props.status.state) {
+  switch (props.torStatus.state) {
     case "running":
       return "text-green-500";
     case "starting":
@@ -53,10 +53,6 @@ async function handleStart() {
 async function handleStop() {
   await torStore.stop();
 }
-
-async function handleUpdate() {
-  await torStore.update();
-}
 </script>
 
 <template>
@@ -69,13 +65,13 @@ async function handleUpdate() {
         <span :class="statusColor">{{ statusText }}</span>
       </div>
 
-      <div v-if="status.version !== undefined" class="flex items-center gap-2">
+      <div v-if="torStatus.version !== undefined" class="flex items-center gap-2">
         <span class="text-surface-400">Version:</span>
-        <span class="text-surface-300">{{ status.version }}</span>
+        <span class="text-surface-300">{{ torStatus.version }}</span>
       </div>
 
-      <div v-if="status.error !== undefined" class="text-xs text-red-400">
-        {{ status.error }}
+      <div v-if="torStatus.error !== undefined" class="text-xs text-red-400">
+        {{ torStatus.error }}
       </div>
     </div>
 
@@ -99,16 +95,13 @@ async function handleUpdate() {
         :disabled="isLoading"
         @click="handleStop"
       />
+    </div>
 
-      <Button
-        v-if="status.updateAvailable"
-        :label="`Update to ${status.latestVersion}`"
-        icon="fas fa-circle-up"
-        size="small"
-        severity="info"
-        :loading="isLoading"
-        @click="handleUpdate"
-      />
+    <div
+      v-if="torStatus.updateAvailable && torStatus.latestVersion !== undefined"
+      class="text-xs text-blue-400"
+    >
+      Update available: {{ torStatus.latestVersion }}
     </div>
   </div>
 </template>

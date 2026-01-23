@@ -19,6 +19,7 @@ export const useSettingsStore = defineStore("settings", () => {
   const settings = ref<TorSettings>({ ...DEFAULT_SETTINGS });
   const isLoading = ref(false);
   const isDownloading = ref(false);
+  const isUpdating = ref(false);
   const isSaving = ref(false);
 
   let saveTimeout: ReturnType<typeof setTimeout> | undefined;
@@ -89,6 +90,22 @@ export const useSettingsStore = defineStore("settings", () => {
     isDownloading.value = false;
   }
 
+  async function update() {
+    if (sdk.value === undefined) return;
+
+    isUpdating.value = true;
+    const result = await sdk.value.backend.updateBinary();
+    if (result.kind === "Ok") {
+      settings.value = result.value;
+      sdk.value.window.showToast("Tor updated successfully!", {
+        variant: "success",
+      });
+    } else {
+      sdk.value.window.showToast(result.error, { variant: "error" });
+    }
+    isUpdating.value = false;
+  }
+
   async function updateUpstreamScope(
     includeHosts: string[],
     excludeHosts: string[],
@@ -113,11 +130,13 @@ export const useSettingsStore = defineStore("settings", () => {
     settings,
     isLoading,
     isDownloading,
+    isUpdating,
     isSaving,
     initialize,
     load,
     save,
     download,
+    update,
     updateUpstreamScope,
   };
 });

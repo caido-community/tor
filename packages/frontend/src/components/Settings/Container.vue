@@ -25,11 +25,11 @@ const { status } = storeToRefs(torStore);
     <div v-if="isLoading" class="text-surface-400">Loading settings...</div>
 
     <template v-else>
-      <InstallSection :settings="settings" />
+      <InstallSection :settings="settings" :tor-status="status" />
 
       <ConfigSection v-model:settings="settings" />
 
-      <ControlSection :status="status" />
+      <ControlSection :tor-status="status" />
 
       <UpstreamSection :settings="settings" />
 

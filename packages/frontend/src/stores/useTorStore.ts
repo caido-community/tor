@@ -95,22 +95,6 @@ export const useTorStore = defineStore("tor", () => {
     isTestingConnection.value = false;
   }
 
-  async function update() {
-    if (sdk.value === undefined) return;
-
-    isLoading.value = true;
-    const result = await sdk.value.backend.updateBinary();
-    if (result.kind === "Ok") {
-      sdk.value.window.showToast("Tor updated successfully!", {
-        variant: "success",
-      });
-      await fetchStatus();
-    } else {
-      sdk.value.window.showToast(result.error, { variant: "error" });
-    }
-    isLoading.value = false;
-  }
-
   return {
     status,
     testResult,
@@ -122,6 +106,5 @@ export const useTorStore = defineStore("tor", () => {
     stop,
     reload,
     testConnection,
-    update,
   };
 });
