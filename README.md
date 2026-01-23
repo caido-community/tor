@@ -16,7 +16,7 @@
 
 Caido plugin to setup and maintain an upstream socks to access the Tor network.
 
-<img width="646" height="268" alt="Settings" src="https://github.com/user-attachments/assets/a616f2e7-cf69-4365-b74f-8aca923871f7" />
+https://github.com/user-attachments/assets/a616f2e7-cf69-4365-b74f-8aca923871f7
 
 ## Installation
 
