@@ -62,6 +62,7 @@ async function handleReload() {
 <template>
   <div class="flex flex-col gap-3">
     <div class="text-lg font-semibold">Process Control</div>
+    <div class="text-surface-500">Start, stop, or reload the Tor process</div>
 
     <div class="flex items-center gap-2">
       <span class="text-surface-300">Status:</span>

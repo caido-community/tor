@@ -63,6 +63,7 @@ async function removeExcludeHost(host: string) {
 <template>
   <div class="flex flex-col gap-4">
     <div class="text-lg font-semibold">Upstream Proxy Scope</div>
+    <div class="text-surface-500">Control which hosts route through Tor</div>
 
     <div class="flex flex-col gap-2">
       <div class="text-xs text-surface-400">

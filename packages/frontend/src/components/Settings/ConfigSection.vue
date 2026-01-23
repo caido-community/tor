@@ -10,6 +10,7 @@ const settings = defineModel<TorSettings>("settings", { required: true });
 <template>
   <div class="flex flex-col gap-3">
     <div class="text-lg font-semibold">Configuration</div>
+    <div class="text-surface-500">Configure Tor behavior and settings</div>
 
     <div class="flex items-center justify-between">
       <label for="auto-start" class="text-surface-300">
@@ -32,7 +33,10 @@ const settings = defineModel<TorSettings>("settings", { required: true });
         v-model="settings.port"
         :min="1"
         :max="65535"
-        class="w-24"
+        :use-grouping="false"
+        :pt="{
+          input: { class: 'text-right' },
+        }"
       />
     </div>
   </div>

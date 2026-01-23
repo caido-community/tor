@@ -15,6 +15,7 @@ async function handleTest() {
 <template>
   <div class="flex flex-col gap-3">
     <div class="text-lg font-semibold">Connection Test</div>
+    <div class="text-surface-500">Verify Tor connectivity</div>
 
     <div class="text-xs text-surface-400">
       Test your connection to check.torproject.org to verify Tor is working.

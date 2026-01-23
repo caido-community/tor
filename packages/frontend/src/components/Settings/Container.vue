@@ -17,7 +17,10 @@ const { status } = storeToRefs(torStore);
 
 <template>
   <div class="flex flex-col gap-12">
-    <div class="text-lg font-semibold text-surface-100">Tor Upstream Proxy</div>
+    <div class="flex flex-col gap-2">
+      <div class="text-lg font-semibold text-surface-100">Tor</div>
+      <div class="text-surface-500">Configure Tor behavior and settings</div>
+    </div>
 
     <div v-if="isLoading" class="text-surface-400">Loading settings...</div>
 
