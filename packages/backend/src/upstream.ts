@@ -9,7 +9,7 @@ type UpstreamProxySocks = {
   connection: {
     host: string;
     port: number;
-    isTls: boolean;
+    isTLS: boolean;
   };
 };
 
@@ -31,8 +31,8 @@ type DeleteUpstreamProxySocksResponse = {
   };
 };
 
-type GetUpstreamProxySocksResponse = {
-  upstreamProxySocks: UpstreamProxySocks | undefined;
+type GetUpstreamProxiesSocksResponse = {
+  upstreamProxiesSocks: UpstreamProxySocks[];
 };
 
 const CREATE_UPSTREAM_PROXY_MUTATION = `
@@ -47,7 +47,7 @@ const CREATE_UPSTREAM_PROXY_MUTATION = `
         connection {
           host
           port
-          isTls
+          isTLS
         }
       }
     }
@@ -66,7 +66,7 @@ const UPDATE_UPSTREAM_PROXY_MUTATION = `
         connection {
           host
           port
-          isTls
+          isTLS
         }
       }
     }
@@ -81,9 +81,9 @@ const DELETE_UPSTREAM_PROXY_MUTATION = `
   }
 `;
 
-const GET_UPSTREAM_PROXY_QUERY = `
-  query GetUpstreamProxySocks($id: ID!) {
-    upstreamProxySocks(id: $id) {
+const GET_UPSTREAM_PROXIES_QUERY = `
+  query GetUpstreamProxySocks {
+    upstreamProxiesSocks {
       id
       allowlist
       denylist
@@ -92,7 +92,7 @@ const GET_UPSTREAM_PROXY_QUERY = `
       connection {
         host
         port
-        isTls
+        isTLS
       }
     }
   }
@@ -111,7 +111,7 @@ export async function createUpstreamProxy(
         connection: {
           host: "127.0.0.1",
           port,
-          isTls: false,
+          isTLS: false,
         },
         allowlist,
         denylist,
@@ -153,7 +153,7 @@ export async function updateUpstreamProxy(
         connection: {
           host: "127.0.0.1",
           port,
-          isTls: false,
+          isTLS: false,
         },
         allowlist,
         denylist,
@@ -200,12 +200,20 @@ export async function getUpstreamProxy(
   sdk: CaidoBackendSDK,
   id: string,
 ): Promise<UpstreamProxySocks | undefined> {
-  const response = await sdk.graphql.execute<GetUpstreamProxySocksResponse>(
-    GET_UPSTREAM_PROXY_QUERY,
-    { id },
+  const response = await sdk.graphql.execute<GetUpstreamProxiesSocksResponse>(
+    GET_UPSTREAM_PROXIES_QUERY,
   );
+  if (response.errors !== undefined && response.errors.length > 0) {
+    sdk.console.error(
+      `Failed to get upstream proxy with ID ${id}: ${response.errors.map((e) => e.message).join(", ")}`,
+    );
+    return undefined;
+  }
+  if (response.data?.upstreamProxiesSocks === undefined) {
+    return undefined;
+  }
 
-  return response.data?.upstreamProxySocks;
+  return response.data.upstreamProxiesSocks.find((p) => p.id === id);
 }
 
 export async function ensureUpstreamProxy(
