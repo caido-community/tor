@@ -13,7 +13,7 @@ export default defineConfig({
   id,
   name: "Tor",
   description: "Allow connecting to the Tor network",
-  version: "0.0.0",
+  version: "0.1.0",
   author: {
     name: "Caido Labs Inc.",
     email: "dev@caido.io",
