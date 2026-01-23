@@ -9,12 +9,12 @@ const METADATA_BASE_URL =
 const ARCHIVE_BASE_URL =
   "https://archive.torproject.org/tor-package-archive/torbrowser";
 
-export type PlatformIdentifier = {
+type PlatformIdentifier = {
   os: string;
   arch: string;
 };
 
-export function getPlatformIdentifier(): Result<PlatformIdentifier> {
+function getPlatformIdentifier(): Result<PlatformIdentifier> {
   const platform = os.platform();
   const arch = os.arch();
 

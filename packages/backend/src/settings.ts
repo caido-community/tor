@@ -18,7 +18,7 @@ const DEFAULT_SETTINGS: StoredSettings = {
   excludeHosts: [],
 };
 
-export function getSettingsPath(sdk: CaidoBackendSDK): string {
+function getSettingsPath(sdk: CaidoBackendSDK): string {
   return path.join(sdk.meta.path(), SETTINGS_FILE);
 }
 

@@ -181,7 +181,3 @@ export async function reloadTor(
   await stopTor(sdk, version);
   return startTor(sdk, binaryPath, port, version);
 }
-
-export function isRunning(): boolean {
-  return torProcess !== undefined && currentState === "running";
-}

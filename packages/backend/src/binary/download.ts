@@ -9,7 +9,7 @@ import type { CaidoBackendSDK, Result, TorVersionInfo } from "../types";
 import { signMacOSBinaries } from "./signature";
 import { extractArchive } from "./spawn";
 
-export function getBinariesPath(sdk: CaidoBackendSDK): string {
+function getBinariesPath(sdk: CaidoBackendSDK): string {
   return path.join(sdk.meta.path(), "binaries");
 }
 

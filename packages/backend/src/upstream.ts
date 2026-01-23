@@ -25,12 +25,6 @@ type UpdateUpstreamProxySocksResponse = {
   };
 };
 
-type DeleteUpstreamProxySocksResponse = {
-  deleteUpstreamProxySocks: {
-    deletedId: string | undefined;
-  };
-};
-
 type GetUpstreamProxiesSocksResponse = {
   upstreamProxiesSocks: UpstreamProxySocks[];
 };
@@ -73,14 +67,6 @@ const UPDATE_UPSTREAM_PROXY_MUTATION = `
   }
 `;
 
-const DELETE_UPSTREAM_PROXY_MUTATION = `
-  mutation DeleteUpstreamProxySocks($id: ID!) {
-    deleteUpstreamProxySocks(id: $id) {
-      deletedId
-    }
-  }
-`;
-
 const GET_UPSTREAM_PROXIES_QUERY = `
   query GetUpstreamProxySocks {
     upstreamProxiesSocks {
@@ -98,7 +84,7 @@ const GET_UPSTREAM_PROXIES_QUERY = `
   }
 `;
 
-export async function createUpstreamProxy(
+async function createUpstreamProxy(
   sdk: CaidoBackendSDK,
   port: number,
   allowlist: string[],
@@ -137,7 +123,7 @@ export async function createUpstreamProxy(
   return { kind: "Ok", value: proxy.id };
 }
 
-export async function updateUpstreamProxy(
+async function updateUpstreamProxy(
   sdk: CaidoBackendSDK,
   id: string,
   port: number,
@@ -172,25 +158,6 @@ export async function updateUpstreamProxy(
 
   if (response.data?.updateUpstreamProxySocks.proxy === undefined) {
     return { kind: "Error", error: "Failed to update upstream proxy" };
-  }
-
-  return { kind: "Ok", value: undefined };
-}
-
-export async function deleteUpstreamProxy(
-  sdk: CaidoBackendSDK,
-  id: string,
-): Promise<Result<void>> {
-  const response = await sdk.graphql.execute<DeleteUpstreamProxySocksResponse>(
-    DELETE_UPSTREAM_PROXY_MUTATION,
-    { id },
-  );
-
-  if (response.errors !== undefined && response.errors.length > 0) {
-    return {
-      kind: "Error",
-      error: response.errors.map((e) => e.message).join(", "),
-    };
   }
 
   return { kind: "Ok", value: undefined };

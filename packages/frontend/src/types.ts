@@ -15,7 +15,7 @@ export type TorSettings = {
   pluginPath: string;
 };
 
-export type TorState = "idle" | "starting" | "running" | "stopping" | "error";
+type TorState = "idle" | "starting" | "running" | "stopping" | "error";
 
 export type TorStatus = {
   state: TorState;
@@ -24,10 +24,6 @@ export type TorStatus = {
   latestVersion: string | undefined;
   error: string | undefined;
 };
-
-export type Result<T> =
-  | { kind: "Ok"; value: T }
-  | { kind: "Error"; error: string };
 
 export type TestConnectionResult = {
   isTor: boolean;
