@@ -28,8 +28,6 @@ export type Result<T> =
 export type TorVersionInfo = {
   binary: string;
   version: string;
-  sig: string;
-  git_tag: string;
 };
 
 export type TestConnectionResult = {

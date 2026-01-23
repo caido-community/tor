@@ -1,4 +1,3 @@
-import { Buffer } from "buffer";
 import { spawn } from "child_process";
 import { chmod, mkdir, readdir, rm, stat, writeFile } from "fs/promises";
 import { default as os } from "os";
@@ -8,29 +7,51 @@ import { fetch } from "caido:http";
 
 import type { CaidoBackendSDK, Result, TorVersionInfo } from "./types";
 
-const UPDATE_BASE_URL =
+const METADATA_BASE_URL =
   "https://aus1.torproject.org/torbrowser/update_3/release";
+const ARCHIVE_BASE_URL =
+  "https://archive.torproject.org/tor-package-archive/torbrowser";
 
-function getPlatformIdentifier(): Result<string> {
+type PlatformIdentifier = {
+  os: string;
+  arch: string;
+};
+
+function getPlatformIdentifier(): Result<PlatformIdentifier> {
   const platform = os.platform();
   const arch = os.arch();
 
-  if (platform === "darwin") {
-    return { kind: "Ok", value: "macos" };
+  if (platform === "darwin" && arch === "arm64") {
+    return { kind: "Ok", value: { os: "macos", arch: "aarch64" } };
+  }
+
+  if (platform === "darwin" && arch === "x64") {
+    return { kind: "Ok", value: { os: "macos", arch: "x86_64" } };
   }
 
   if (platform === "linux" && arch === "x64") {
-    return { kind: "Ok", value: "linux-x86_64" };
+    return { kind: "Ok", value: { os: "linux", arch: "x86_64" } };
   }
 
   if (platform === "win32" && arch === "x64") {
-    return { kind: "Ok", value: "windows-x86_64" };
+    return { kind: "Ok", value: { os: "windows", arch: "x86_64" } };
   }
 
   return {
     kind: "Error",
     error: `Unsupported platform: ${platform} ${arch}`,
   };
+}
+
+function buildMetadataUrl(platform: PlatformIdentifier): string {
+  if (platform.os === "macos") {
+    return `${METADATA_BASE_URL}/download-${platform.os}.json`;
+  }
+  return `${METADATA_BASE_URL}/download-${platform.os}-${platform.arch}.json`;
+}
+
+function buildBinaryUrl(version: string, platform: PlatformIdentifier): string {
+  return `${ARCHIVE_BASE_URL}/${version}/tor-expert-bundle-${platform.os}-${platform.arch}-${version}.tar.gz`;
 }
 
 export async function fetchLatestVersion(
@@ -41,7 +62,7 @@ export async function fetchLatestVersion(
     return platformResult;
   }
 
-  const url = `${UPDATE_BASE_URL}/download-${platformResult.value}.json`;
+  const url = buildMetadataUrl(platformResult.value);
   sdk.console.log(`Fetching version info from: ${url}`);
 
   const response = await fetch(url);
@@ -52,8 +73,16 @@ export async function fetchLatestVersion(
     };
   }
 
-  const data = (await response.json()) as TorVersionInfo;
-  return { kind: "Ok", value: data };
+  const data = (await response.json()) as { version: string };
+  const binaryUrl = buildBinaryUrl(data.version, platformResult.value);
+
+  return {
+    kind: "Ok",
+    value: {
+      version: data.version,
+      binary: binaryUrl,
+    },
+  };
 }
 
 export function getBinariesPath(sdk: CaidoBackendSDK): string {
