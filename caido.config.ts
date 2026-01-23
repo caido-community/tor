@@ -11,7 +11,7 @@ import tailwindPrimeui from "tailwindcss-primeui";
 const id = "tor";
 export default defineConfig({
   id,
-  name: "Tor Upstream",
+  name: "Tor",
   description: "Allow connecting to the Tor network",
   version: "0.0.0",
   author: {
