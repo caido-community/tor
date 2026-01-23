@@ -12,6 +12,7 @@ const DEFAULT_SETTINGS: TorSettings = {
   upstreamProxyId: undefined,
   includeHosts: ["check.torproject.org"],
   excludeHosts: [],
+  pluginPath: "",
 };
 
 export const useSettingsStore = defineStore("settings", () => {

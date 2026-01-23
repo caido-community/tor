@@ -12,6 +12,7 @@ export type TorSettings = {
   upstreamProxyId: string | undefined;
   includeHosts: string[];
   excludeHosts: string[];
+  pluginPath: string;
 };
 
 export type TorState = "idle" | "starting" | "running" | "stopping" | "error";

@@ -3,6 +3,7 @@ import { storeToRefs } from "pinia";
 import Button from "primevue/button";
 import { computed } from "vue";
 
+import { useSDK } from "@/plugins/sdk";
 import { useSettingsStore } from "@/stores";
 import type { TorSettings, TorStatus } from "@/types";
 
@@ -11,6 +12,7 @@ const props = defineProps<{
   torStatus: TorStatus;
 }>();
 
+const sdk = useSDK();
 const settingsStore = useSettingsStore();
 const { isDownloading, isUpdating } = storeToRefs(settingsStore);
 
@@ -23,12 +25,37 @@ const platformName = computed(() => {
   return "Unknown";
 });
 
+const canUpdate = computed(() => {
+  return (
+    props.torStatus.updateAvailable &&
+    props.torStatus.latestVersion !== undefined &&
+    props.settings.installedVersion !== props.torStatus.latestVersion
+  );
+});
+
+const relativePath = computed(() => {
+  const binaryPath = props.settings.binaryPath;
+  if (binaryPath === undefined) return undefined;
+  const basePath = props.settings.pluginPath;
+  if (binaryPath.startsWith(basePath)) {
+    return `${binaryPath.slice(basePath.length)}`;
+  }
+  return binaryPath;
+});
+
 async function handleDownload() {
   await settingsStore.download();
 }
 
 async function handleUpdate() {
   await settingsStore.update();
+}
+
+async function handleCopyPath() {
+  const fullPath = props.settings.binaryPath;
+  if (fullPath === undefined) return;
+  await navigator.clipboard.writeText(fullPath);
+  sdk.window.showToast("Path copied to clipboard", { variant: "success" });
 }
 </script>
 
@@ -43,19 +70,25 @@ async function handleUpdate() {
       </div>
       <div class="text-xs text-surface-400">
         <div>Version: {{ settings.installedVersion ?? "Unknown" }}</div>
-        <div
-          v-if="
-            torStatus.updateAvailable && torStatus.latestVersion !== undefined
-          "
-        >
+        <div v-if="canUpdate">
           Latest version: {{ torStatus.latestVersion }}
         </div>
-        <div class="truncate" :title="settings.binaryPath">
-          Path: {{ settings.binaryPath }}
+        <div class="flex items-center gap-1">
+          <span class="truncate" :title="settings.binaryPath">
+            Path: {{ relativePath }}
+          </span>
+          <Button
+            icon="fas fa-copy"
+            severity="contrast"
+            text
+            size="small"
+            title="Copy full path"
+            @click="handleCopyPath"
+          />
         </div>
       </div>
       <Button
-        v-if="torStatus.updateAvailable"
+        v-if="canUpdate"
         label="Update Tor"
         icon="fas fa-arrow-up"
         :loading="isUpdating"

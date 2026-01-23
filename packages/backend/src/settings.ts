@@ -5,7 +5,9 @@ import type { CaidoBackendSDK, TorSettings } from "./types";
 
 const SETTINGS_FILE = "settings.json";
 
-const DEFAULT_SETTINGS: TorSettings = {
+type StoredSettings = Omit<TorSettings, "pluginPath">;
+
+const DEFAULT_SETTINGS: StoredSettings = {
   autoStart: false,
   autoCheckUpdates: true,
   port: 9050,
@@ -31,19 +33,21 @@ async function pathExists(filePath: string): Promise<boolean> {
 
 export async function loadSettings(sdk: CaidoBackendSDK): Promise<TorSettings> {
   const settingsPath = getSettingsPath(sdk);
+  const pluginPath = sdk.meta.path();
 
   if ((await pathExists(settingsPath)) === false) {
-    return { ...DEFAULT_SETTINGS };
+    return { ...DEFAULT_SETTINGS, pluginPath };
   }
 
   const content = await readFile(settingsPath, "utf-8");
-  const parsed = JSON.parse(content) as Partial<TorSettings>;
+  const parsed = JSON.parse(content) as Partial<StoredSettings>;
 
   return {
     ...DEFAULT_SETTINGS,
     ...parsed,
     includeHosts: parsed.includeHosts ?? DEFAULT_SETTINGS.includeHosts,
     excludeHosts: parsed.excludeHosts ?? DEFAULT_SETTINGS.excludeHosts,
+    pluginPath,
   };
 }
 
@@ -58,6 +62,7 @@ export async function saveSettings(
     await mkdir(dir, { recursive: true });
   }
 
-  const content = JSON.stringify(settings, null, 2);
+  const { pluginPath: _, ...storedSettings } = settings;
+  const content = JSON.stringify(storedSettings, null, 2);
   await writeFile(settingsPath, content);
 }
