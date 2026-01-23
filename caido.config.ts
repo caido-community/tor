@@ -1,17 +1,18 @@
-import { defineConfig } from '@caido-community/dev';
-import vue from '@vitejs/plugin-vue';
+import path from "path";
+
+import tailwindCaido from "@caido/tailwindcss";
+import { defineConfig } from "@caido-community/dev";
+import vue from "@vitejs/plugin-vue";
+import prefixwrap from "postcss-prefixwrap";
 import tailwindcss from "tailwindcss";
 // @ts-expect-error no declared types at this time
 import tailwindPrimeui from "tailwindcss-primeui";
-import tailwindCaido from "@caido/tailwindcss";
-import path from "path";
-import prefixwrap from "postcss-prefixwrap";
 
-const id = "frontend-vue";
+const id = "tor";
 export default defineConfig({
   id,
-  name: "Frontend Vue",
-  description: "Plugin template with frontend using VueJS",
+  name: "Tor Upstream",
+  description: "Allow connecting to the Tor network",
   version: "0.0.0",
   author: {
     name: "Caido Labs Inc.",
@@ -21,36 +22,35 @@ export default defineConfig({
   plugins: [
     {
       kind: "backend",
-      id: "backend",
+      id: "tor-backend",
       root: "packages/backend",
     },
     {
-      kind: 'frontend',
-      id: "frontend",
-      root: 'packages/frontend',
+      kind: "frontend",
+      id: "tor-frontend",
+      root: "packages/frontend",
       backend: {
-        id: "backend",
+        id: "tor-backend",
       },
       vite: {
         plugins: [vue()],
         build: {
           rollupOptions: {
             external: [
-              '@caido/frontend-sdk', 
-              "@codemirror/autocomplete", 
-              "@codemirror/commands", 
-              "@codemirror/language", 
-              "@codemirror/lint", 
-              "@codemirror/search", 
-              "@codemirror/state", 
-              "@codemirror/view", 
-              "@lezer/common", 
-              "@lezer/highlight", 
+              "@caido/frontend-sdk",
+              "@codemirror/autocomplete",
+              "@codemirror/commands",
+              "@codemirror/language",
+              "@codemirror/lint",
+              "@codemirror/search",
+              "@codemirror/state",
+              "@codemirror/view",
+              "@lezer/common",
+              "@lezer/highlight",
               "@lezer/lr",
               "vue",
-
-            ]
-          }
+            ],
+          },
         },
         resolve: {
           alias: [
@@ -72,25 +72,24 @@ export default defineConfig({
                   preflight: false,
                 },
                 content: [
-                  './packages/frontend/src/**/*.{vue,ts}',
-                  './node_modules/@caido/primevue/dist/primevue.mjs'
+                  "./packages/frontend/src/**/*.{vue,ts}",
+                  "./node_modules/@caido/primevue/dist/primevue.mjs",
                 ],
                 // Check the [data-mode="dark"] attribute on the <html> element to determine the mode
                 // This attribute is set in the Caido core application
                 darkMode: ["selector", '[data-mode="dark"]'],
                 plugins: [
-
                   // This plugin injects the necessary Tailwind classes for PrimeVue components
                   tailwindPrimeui,
 
                   // This plugin injects the necessary Tailwind classes for the Caido theme
                   tailwindCaido,
                 ],
-              })
-            ]
-          }
-        }
-      }
-    }
-  ]
+              }),
+            ],
+          },
+        },
+      },
+    },
+  ],
 });

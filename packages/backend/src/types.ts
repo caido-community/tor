@@ -1,7 +1,4 @@
-import { type Caido } from "@caido/sdk-frontend";
-import { type API, type BackendEvents } from "backend";
-
-export type FrontendSDK = Caido<API, BackendEvents>;
+import type { DefineEvents, SDK } from "caido:plugin";
 
 export type TorSettings = {
   autoStart: boolean;
@@ -28,7 +25,20 @@ export type Result<T> =
   | { kind: "Ok"; value: T }
   | { kind: "Error"; error: string };
 
+export type TorVersionInfo = {
+  binary: string;
+  version: string;
+  sig: string;
+  git_tag: string;
+};
+
 export type TestConnectionResult = {
   isTor: boolean;
   ip: string;
 };
+
+export type BackendEvents = DefineEvents<{
+  "status-changed": (status: TorStatus) => void;
+}>;
+
+export type CaidoBackendSDK = SDK<never, BackendEvents>;
