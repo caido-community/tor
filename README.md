@@ -23,8 +23,8 @@ https://github.com/user-attachments/assets/a616f2e7-cf69-4365-b74f-8aca923871f7
 ### From Plugin Store
 
 1. Install via the Caido Plugin Store
-2. Navigate to `Settings`, open `ntlm`
-3. Configure your
+2. Navigate to `Settings`, open `tor`
+3. Configure your tor proxy
 
 ### Manual Installation
 
