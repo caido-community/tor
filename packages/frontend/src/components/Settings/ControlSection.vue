@@ -20,7 +20,7 @@ const isStopping = computed(() => props.status.state === "stopping");
 const statusText = computed(() => {
   switch (props.status.state) {
     case "running":
-      return "Running";
+      return "Process is running";
     case "starting":
       return "Starting...";
     case "stopping":
@@ -28,21 +28,7 @@ const statusText = computed(() => {
     case "error":
       return `Error: ${props.status.error}`;
     default:
-      return "Stopped";
-  }
-});
-
-const statusColor = computed(() => {
-  switch (props.status.state) {
-    case "running":
-      return "text-green-500";
-    case "starting":
-    case "stopping":
-      return "text-yellow-500";
-    case "error":
-      return "text-red-500";
-    default:
-      return "text-surface-400";
+      return "Process is not running";
   }
 });
 
@@ -62,11 +48,12 @@ async function handleReload() {
 <template>
   <div class="flex flex-col gap-3">
     <div class="text-lg font-semibold">Process Control</div>
-    <div class="text-surface-500">Start, stop, or reload the Tor process</div>
 
     <div class="flex items-center gap-2">
-      <span class="text-surface-300">Status:</span>
-      <span :class="statusColor">{{ statusText }}</span>
+      <i v-if="isRunning" class="fas fa-check-circle text-green-500" />
+      <i v-else-if="isStarting" class="fas fa-clock text-yellow-500" />
+      <i v-else class="fas fa-times-circle text-red-500" />
+      <span class="text-surface-300">{{ statusText }}</span>
     </div>
 
     <div class="flex gap-2">

@@ -10,7 +10,6 @@ const settings = defineModel<TorSettings>("settings", { required: true });
 <template>
   <div class="flex flex-col gap-3">
     <div class="text-lg font-semibold">Configuration</div>
-    <div class="text-surface-500">Configure Tor behavior and settings</div>
 
     <div class="flex items-center justify-between">
       <label for="auto-start" class="text-surface-300">

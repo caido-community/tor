@@ -62,11 +62,10 @@ async function removeExcludeHost(host: string) {
 
 <template>
   <div class="flex flex-col gap-4">
-    <div class="text-lg font-semibold">Upstream Proxy Scope</div>
-    <div class="text-surface-500">Control which hosts route through Tor</div>
+    <div class="text-lg font-semibold">Upstream Proxy</div>
 
     <div class="flex flex-col gap-2">
-      <div class="text-xs text-surface-400">
+      <div class="text-surface-400">
         Include hosts (traffic routed through Tor):
       </div>
       <div class="flex flex-wrap gap-1">
@@ -94,7 +93,7 @@ async function removeExcludeHost(host: string) {
     </div>
 
     <div class="flex flex-col gap-2">
-      <div class="text-xs text-surface-400">
+      <div class="text-surface-400">
         Exclude hosts (traffic NOT routed through Tor):
       </div>
       <div class="flex flex-wrap gap-1">
@@ -107,7 +106,7 @@ async function removeExcludeHost(host: string) {
         />
         <span
           v-if="settings.excludeHosts.length === 0"
-          class="text-xs text-surface-500"
+          class="text-sm text-surface-500"
         >
           No excluded hosts
         </span>

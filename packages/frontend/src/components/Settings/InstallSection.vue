@@ -30,7 +30,6 @@ async function handleDownload() {
 <template>
   <div class="flex flex-col gap-3">
     <div class="text-lg font-semibold">Installation</div>
-    <div class="text-surface-500">Download and install the Tor binary</div>
 
     <div v-if="isInstalled" class="flex flex-col gap-2">
       <div class="flex items-center gap-2">
