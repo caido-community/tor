@@ -1,10 +1,44 @@
-# VueJS Frontend Template
+<div align="center">
+  <img width="1000" alt="image" src="https://github.com/caido-community/.github/blob/main/content/banner.png?raw=true">
 
-This template should be used as a starting point for creating a new plugin with a VueJS frontend.
+  <br />
+  <br />
+  <a href="https://github.com/caido-community" target="_blank">Github</a>
+  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  <a href="https://developer.caido.io/" target="_blank">Documentation</a>
+  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  <a href="https://links.caido.io/www-discord" target="_blank">Discord</a>
+  <br />
+  <hr />
+</div>
 
-## Features
+# TOR
 
-- [pnpm](https://pnpm.io/) as package manager
-- [TypeScript](https://www.typescriptlang.org/)
-- [VueJS](https://vuejs.org/)
-- [PrimeVue](https://primevue.org/) for UI components
+Caido plugin to setup and maintain an upstream socks to access the Tor network.
+
+<img width="646" height="268" alt="Settings" src="https://github.com/user-attachments/assets/a616f2e7-cf69-4365-b74f-8aca923871f7" />
+
+## Installation
+
+### From Plugin Store
+
+1. Install via the Caido Plugin Store
+2. Navigate to `Settings`, open `ntlm`
+3. Configure your
+
+### Manual Installation
+
+1. Install dependencies:
+
+   ```bash
+   pnpm install
+   ```
+
+2. Build the plugin:
+
+   ```bash
+   pnpm build
+   ```
+
+3. Install in Caido:
+   - Upload the `dist/plugin_package.zip` file by clicking "Install Package" in Caido's plugin settings
