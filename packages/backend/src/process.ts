@@ -1,11 +1,11 @@
-import { spawn } from "child_process";
+import { type ChildProcess, spawn } from "child_process";
 import { mkdir, stat, writeFile } from "fs/promises";
 import path from "path";
 
 import { getDataPath } from "./binary";
 import type { CaidoBackendSDK, TorState, TorStatus } from "./types";
 
-let torProcess: ReturnType<typeof spawn> | undefined;
+let torProcess: ChildProcess | undefined;
 let currentState: TorState = "idle";
 let currentError: string | undefined;
 
