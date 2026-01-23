@@ -5,10 +5,14 @@ import { computed, ref } from "vue";
 
 import StatusPopover from "./StatusPopover.vue";
 
-import { useTorStore } from "@/stores";
+import { useSettingsStore, useTorStore } from "@/stores";
 
 const torStore = useTorStore();
+const settingsStore = useSettingsStore();
 const { status } = storeToRefs(torStore);
+const { settings } = storeToRefs(settingsStore);
+
+const isInstalled = computed(() => settings.value.binaryPath !== undefined);
 
 const popoverRef = ref();
 
@@ -53,11 +57,11 @@ function togglePopover(event: MouseEvent) {
       :title="statusTitle"
       @click="togglePopover"
     >
-      <i :class="statusIcon" class="text-xs" />
-      <span class="text-xs text-surface-300">Tor</span>
+      <i :class="statusIcon" class="text-sm" />
+      <span class="text-sm text-surface-300">Tor</span>
       <i
-        v-if="status.updateAvailable"
-        class="fas fa-circle-up text-blue-400 text-xs ml-1"
+        v-if="isInstalled && status.updateAvailable"
+        class="fas fa-circle-up text-blue-400 text-sm ml-1"
         title="Update available"
       />
     </button>
