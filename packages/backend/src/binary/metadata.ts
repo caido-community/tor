@@ -29,6 +29,9 @@ function getPlatformIdentifier(): Result<PlatformIdentifier> {
   if (platform === "linux" && arch === "x64") {
     return { kind: "Ok", value: { os: "linux", arch: "x86_64" } };
   }
+  if (platform === "linux" && arch === "arm64") {
+    return { kind: "Ok", value: { os: "linux", arch: "aarch64" } };
+  }
 
   if (platform === "win32" && arch === "x64") {
     return { kind: "Ok", value: { os: "windows", arch: "x86_64" } };
@@ -43,6 +46,10 @@ function getPlatformIdentifier(): Result<PlatformIdentifier> {
 function buildMetadataUrl(platform: PlatformIdentifier): string {
   if (platform.os === "macos") {
     return `${METADATA_BASE_URL}/download-${platform.os}.json`;
+  }
+  // linux-aarch64 only exists in the alpha channel
+  if (platform.os === "linux" && platform.arch === "aarch64") {
+    return `${METADATA_BASE_URL.replace("/release", "/alpha")}/download-linux-aarch64.json`;
   }
   return `${METADATA_BASE_URL}/download-${platform.os}-${platform.arch}.json`;
 }
