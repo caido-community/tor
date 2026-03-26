@@ -36,6 +36,7 @@ async function findTorExecutable(dir: string): Promise<string | undefined> {
     for (const entry of entries) {
       const fullPath = path.join(currentDir, entry.name);
       if (entry.isDirectory() === true) {
+        if (entry.name === "debug") continue;
         const found = await searchDir(fullPath);
         if (found !== undefined) return found;
       } else if (entry.name === torName) {

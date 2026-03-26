@@ -6,6 +6,8 @@ import type { CaidoBackendSDK, Result, TorVersionInfo } from "../types";
 
 const METADATA_BASE_URL =
   "https://aus1.torproject.org/torbrowser/update_3/release";
+const METADATA_ALPHA_BASE_URL =
+  "https://aus1.torproject.org/torbrowser/update_3/alpha";
 const ARCHIVE_BASE_URL =
   "https://archive.torproject.org/tor-package-archive/torbrowser";
 
@@ -26,6 +28,10 @@ function getPlatformIdentifier(): Result<PlatformIdentifier> {
     return { kind: "Ok", value: { os: "macos", arch: "x86_64" } };
   }
 
+  if (platform === "linux" && arch === "arm64") {
+    return { kind: "Ok", value: { os: "linux", arch: "aarch64" } };
+  }
+
   if (platform === "linux" && arch === "x64") {
     return { kind: "Ok", value: { os: "linux", arch: "x86_64" } };
   }
@@ -44,6 +50,12 @@ function buildMetadataUrl(platform: PlatformIdentifier): string {
   if (platform.os === "macos") {
     return `${METADATA_BASE_URL}/download-${platform.os}.json`;
   }
+
+  // Linux aarch64 is only available in the alpha channel.
+  if (platform.os === "linux" && platform.arch === "aarch64") {
+    return `${METADATA_ALPHA_BASE_URL}/download-${platform.os}-${platform.arch}.json`;
+  }
+
   return `${METADATA_BASE_URL}/download-${platform.os}-${platform.arch}.json`;
 }
 
