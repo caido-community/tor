@@ -29,6 +29,10 @@ function createStatus(
   return status;
 }
 
+export function getCurrentState(): TorState {
+  return currentState;
+}
+
 export function getCurrentStatus(extra: Partial<TorStatus> = {}): TorStatus {
   return {
     state: currentState,

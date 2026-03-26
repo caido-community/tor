@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import Button from "primevue/button";
+import { computed } from "vue";
 
 import { useTorStore } from "@/stores";
 
 const torStore = useTorStore();
-const { testResult, isTestingConnection } = storeToRefs(torStore);
+const { status, testResult, isTestingConnection } = storeToRefs(torStore);
+
+const isRunning = computed(() => status.value.state === "running");
 
 async function handleTest() {
   await torStore.testConnection();
@@ -47,6 +50,7 @@ async function handleTest() {
       label="Test Connection"
       icon="fas fa-bolt"
       :loading="isTestingConnection"
+      :disabled="!isRunning"
       @click="handleTest"
     />
   </div>
