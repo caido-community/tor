@@ -171,7 +171,8 @@ async function testConnection(
         ip: data.IP,
       },
     };
-  } catch {
+  } catch (err) {
+    sdk.console.error(`[Tor] Connection test failed: ${err}`);
     return {
       kind: "Error",
       error: "Failed to connect to check.torproject.org",
