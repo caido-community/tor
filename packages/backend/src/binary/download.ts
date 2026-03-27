@@ -36,6 +36,8 @@ async function findTorExecutable(dir: string): Promise<string | undefined> {
     for (const entry of entries) {
       const fullPath = path.join(currentDir, entry.name);
       if (entry.isDirectory() === true) {
+        // The debug directory contains a shared object version of tor
+        // that lacks a dynamic linker and cannot be executed standalone.
         if (entry.name === "debug") continue;
         const found = await searchDir(fullPath);
         if (found !== undefined) return found;
