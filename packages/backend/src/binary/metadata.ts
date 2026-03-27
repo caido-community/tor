@@ -6,6 +6,8 @@ import type { CaidoBackendSDK, Result, TorVersionInfo } from "../types";
 
 const METADATA_BASE_URL =
   "https://aus1.torproject.org/torbrowser/update_3/release";
+const METADATA_ALPHA_BASE_URL =
+  "https://aus1.torproject.org/torbrowser/update_3/alpha";
 const ARCHIVE_BASE_URL =
   "https://archive.torproject.org/tor-package-archive/torbrowser";
 
@@ -14,36 +16,38 @@ type PlatformIdentifier = {
   arch: string;
 };
 
+const PLATFORM_MAP = new Map<string, PlatformIdentifier>([
+  ["darwin/arm64", { os: "macos", arch: "aarch64" }],
+  ["darwin/x64", { os: "macos", arch: "x86_64" }],
+  ["linux/arm64", { os: "linux", arch: "aarch64" }],
+  ["linux/x64", { os: "linux", arch: "x86_64" }],
+  ["win32/x64", { os: "windows", arch: "x86_64" }],
+]);
+
 function getPlatformIdentifier(): Result<PlatformIdentifier> {
-  const platform = os.platform();
-  const arch = os.arch();
+  const key = `${os.platform()}/${os.arch()}`;
+  const identifier = PLATFORM_MAP.get(key);
 
-  if (platform === "darwin" && arch === "arm64") {
-    return { kind: "Ok", value: { os: "macos", arch: "aarch64" } };
+  if (identifier === undefined) {
+    return {
+      kind: "Error",
+      error: `Unsupported platform: ${key}`,
+    };
   }
 
-  if (platform === "darwin" && arch === "x64") {
-    return { kind: "Ok", value: { os: "macos", arch: "x86_64" } };
-  }
-
-  if (platform === "linux" && arch === "x64") {
-    return { kind: "Ok", value: { os: "linux", arch: "x86_64" } };
-  }
-
-  if (platform === "win32" && arch === "x64") {
-    return { kind: "Ok", value: { os: "windows", arch: "x86_64" } };
-  }
-
-  return {
-    kind: "Error",
-    error: `Unsupported platform: ${platform} ${arch}`,
-  };
+  return { kind: "Ok", value: identifier };
 }
 
 function buildMetadataUrl(platform: PlatformIdentifier): string {
   if (platform.os === "macos") {
     return `${METADATA_BASE_URL}/download-${platform.os}.json`;
   }
+
+  // Linux aarch64 is only available in the alpha channel.
+  if (platform.os === "linux" && platform.arch === "aarch64") {
+    return `${METADATA_ALPHA_BASE_URL}/download-${platform.os}-${platform.arch}.json`;
+  }
+
   return `${METADATA_BASE_URL}/download-${platform.os}-${platform.arch}.json`;
 }
 

@@ -6,7 +6,13 @@ import {
   downloadBinary as downloadBinaryInternal,
   fetchLatestVersion,
 } from "./binary";
-import { getCurrentStatus, reloadTor, startTor, stopTor } from "./process";
+import {
+  getCurrentState,
+  getCurrentStatus,
+  reloadTor,
+  startTor,
+  stopTor,
+} from "./process";
 import { loadSettings, saveSettings as saveSettingsInternal } from "./settings";
 import type {
   BackendEvents,
@@ -142,24 +148,36 @@ async function updateBinary(sdk: BackendSDK): Promise<Result<TorSettings>> {
 async function testConnection(
   sdk: BackendSDK,
 ): Promise<Result<TestConnectionResult>> {
-  const spec = new RequestSpec("https://check.torproject.org/api/ip");
-  spec.setMethod("GET");
-
-  const result = await sdk.requests.send(spec);
-  const body = result.response.getBody()?.toText();
-
-  if (body === undefined) {
-    return { kind: "Error", error: "No response body" };
+  if (getCurrentState() !== "running") {
+    return { kind: "Error", error: "Tor is not running" };
   }
 
-  const data = JSON.parse(body) as { IsTor: boolean; IP: string };
-  return {
-    kind: "Ok",
-    value: {
-      isTor: data.IsTor,
-      ip: data.IP,
-    },
-  };
+  try {
+    const spec = new RequestSpec("https://check.torproject.org/api/ip");
+    spec.setMethod("GET");
+
+    const result = await sdk.requests.send(spec);
+    const body = result.response.getBody()?.toText();
+
+    if (body === undefined) {
+      return { kind: "Error", error: "No response body" };
+    }
+
+    const data = JSON.parse(body) as { IsTor: boolean; IP: string };
+    return {
+      kind: "Ok",
+      value: {
+        isTor: data.IsTor,
+        ip: data.IP,
+      },
+    };
+  } catch (err) {
+    sdk.console.error(`[Tor] Connection test failed: ${err}`);
+    return {
+      kind: "Error",
+      error: "Failed to connect to check.torproject.org",
+    };
+  }
 }
 
 async function getUpstreamProxyInfo(sdk: BackendSDK): Promise<
